@@ -24,7 +24,7 @@ Example:
 In order to control the amount of tracing output, there is three possibilities: 
 * Do not specify jdbctracer() in front of the original JDBC url: The original driver is picked up.
 * Specify jdbctracer() in front of the original JDBC url: The connections are wrapped using the log level from the jdbctracer logging. 
-* Specify jdbctracer(X) in front of the original JDBC url: The log level X is used regardless of the configured logging for the jdbctracer.
+* Specify jdbctracer(X) in front of the original JDBC url: The log level X is used regardless of the configured logging for the jdbctracer. X=NONE|ERROR|WARN|INFO|DEBUG|ALL (INFO beeing standard, DEBUG giving more information, ALL beeing most verbose)
 
 The jdbctracer driver uses 'JDBC' as its marker. When ```NONE``` is specified as logging level, no wrapping occurs.
 
