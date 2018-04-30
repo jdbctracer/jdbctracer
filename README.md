@@ -18,7 +18,7 @@ In order to turn on tracing, specify jdbctracer(INFO) in front of your JDBC conn
 
 Example: 
 
-```jdbc:oracle://123.456.789.10@scott```  ==>  ```jdbctracer(INFO)jdbc.oracle://123.456.789.10@scott```
+```jdbc:oracle:thin:@123.456.789.10:4711:mydb```  ==>  ```jdbctracer(INFO)jdbc:oracle:thin:@123.456.789.10:4711:mydb```
 
 
 In order to control the amount of tracing output, there is three possibilities: 
