@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>jdbctracer</groupId>
+    <artifactId>jdbctracer</artifactId>
+    <version>1.0</version>
+    <url>https://github.com/jdbctracer</url>
+
+    <packaging>jar</packaging>
+    <name>${project.artifactId}</name>
+    <description>JDBCTRACER: JDBC level tracing made simple.</description>
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://github.com/jdbctracer/jdbctracer/blob/master/LICENSE</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/jdbctracer/jdbctracer</url>
+        <connection>scm:git:https://github.com/jdbctracer/jdbctracer.git</connection>
+        <developerConnection>scm:git:https://github.com/jdbctracer/jdbctracer.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>jdbctracer</id>
+            <name>Tom Krueger</name>
+            <url>https://github.com/jdbctracer</url>
+            <timezone>Central European Time</timezone>
+        </developer>
+    </developers>
+
+    <ciManagement>
+        <system>Travis CI</system>
+        <url>https://travis-ci.org/xx/yy</url>
+    </ciManagement>
+
+    <issueManagement>
+        <url>https://github.com/jdbctracer/jdbctracer/issues</url>
+    </issueManagement>
+
+    <properties>
+        <encoding>UTF-8</encoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>org.helper.jdbctracer.Main</mainClass>
+                        </manifest>
+                        <manifestEntries>
+                            <Implementation-Title>JDBC tracing made simple</Implementation-Title>
+                            <Implementation-URL>${project.url}</Implementation-URL>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Import-Package>javax.sql</Import-Package>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
