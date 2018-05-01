@@ -32,5 +32,7 @@ The jdbctracer driver uses 'JDBC' as its marker. When ```NONE``` is specified as
 
 It does not trace every JDBC interface call. I deemed it not worthwhile as it can cause significant overhead and significant amount of output. But hey - open source: If your needs are not fulfilled, either create a pull request (preferred) or fork!
 
-The integration in logging facilies is not completely perfect, but sufficient enough for my needs.
+The integration in logging facilies is not completely perfect, but sufficient enough for my needs. 
+
+##### 
 
