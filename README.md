@@ -1,6 +1,8 @@
 # jdbctracer
 Simple tracing JDBC driver wrapper for any JDBC driver
 
+[![Build Status](https://travis-ci.org/jdbctracer/jdbctracer.png?branch=master)](https://travis-ci.org/jdbctracer/jdbctracer)
+
 ## Objective
 
 I wanted to have a simple yet sufficient driver-independent aid for tracing JDBC calls. Of course, the various JDBC drivers do this themselves, but each of those does it in a different fashion.... When working with multiple drivers concurrently, this gets annoying.
@@ -34,5 +36,10 @@ It does not trace every JDBC interface call. I deemed it not worthwhile as it ca
 
 The integration in logging facilies is not completely perfect, but sufficient enough for my needs. 
 
-##### 
+## Contributing
+
+Fork and Pull requests! Make sure all tests pass and add tests for your code.
+## License
+
+jdbctracer is released under MIT License.
 
