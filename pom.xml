@@ -16,6 +16,7 @@
         <license>
             <name>MIT License</name>
             <url>https://github.com/jdbctracer/jdbctracer/blob/master/LICENSE</url>
+            <distribution>repo</distribution>
         </license>
     </licenses>
 
