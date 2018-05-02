@@ -5,9 +5,10 @@ import java.sql.*;
 import java.util.Properties;
 
 public class Main {
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws Exception {
         if (args.length == 0 || args[0].equals("-help")) {
             System.out.println("USAGE: url [-prop:name=value]* [sql]*");
+            System.out.println("VERSION: " + GitRepositoryState.getGitRepositoryState().toString());
             System.exit(2);
         }
         if (!new TraceDriver().acceptsURL("jdbctrace(level)jdbc:")) {

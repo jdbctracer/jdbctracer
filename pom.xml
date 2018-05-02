@@ -29,7 +29,7 @@
     <developers>
         <developer>
             <id>jdbctracer</id>
-            <name>Tom Krueger</name>
+            <name>Thomas Krueger</name>
             <url>https://github.com/jdbctracer</url>
             <timezone>Central European Time</timezone>
         </developer>
@@ -51,6 +51,20 @@
     </properties>
 
     <build>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                </includes>
+            </resource>
+        </resources>
+
+        <finalName>${project.artifactId}-${project.version}-${git.commit.id.describe-short}</finalName>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -66,7 +80,7 @@
                             <Implementation-Title>JDBC tracing made simple</Implementation-Title>
                             <Implementation-URL>${project.url}</Implementation-URL>
                             <Implementation-Version>${project.version}</Implementation-Version>
-                            <Import-Package>javax.sql</Import-Package>
+                            <SCM-Revision>${git.commit.id.describe-short}</SCM-Revision>
                         </manifestEntries>
                     </archive>
                 </configuration>
@@ -85,7 +99,29 @@
                 </dependencies>
             </plugin>
 
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>2.2.4</version>
+                <executions>
+                    <execution>
+                        <id>get-the-git-infos</id>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                        <phase>validate</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                    <format>properties</format>
+                    <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
+                </configuration>
+            </plugin>
+
         </plugins>
+
     </build>
 
     <dependencies>
