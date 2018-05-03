@@ -6,18 +6,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 final class Output {
     final private String id;
     final private Logger logger;
-    final int kind;
-    final private static String[] l2s = new String[] { "ERROR", "WARN", "INFO", "DEBUG", "ALL" };
+    final private int level;
 
-    Output(String idStr, Logger log, int k) {
+    Output(String idStr, Logger log, Level l) {
         id = idStr;
         logger = log;
-        kind = k;
+        level = l.intValue();
     }
 
     interface MeasuredFunction<R> {
@@ -28,27 +28,37 @@ final class Output {
         void call() throws SQLException;
     }
 
-    <R> R act(int level, String msg, MeasuredFunction<R> fun) throws SQLException {
-        long start = System.currentTimeMillis();
+    private static long millis() { return System.currentTimeMillis(); }
+
+    boolean enabled(Level lvl) {
+        return lvl.intValue() >= level;
+    }
+
+    private void log(Level lvl, long ms, String msg, Object result) {
+        logger.log(lvl, "%dms %s %s -> %s", new Object[]{ms, id, msg, extract(result)});
+    }
+
+    <R> R act(Level lvl, String msg, MeasuredFunction<R> fun) throws SQLException {
+        long start = millis();
         try {
             R result = fun.call();
-            if (level <= kind) log(l2s[level], (System.currentTimeMillis()-start), msg, result);
+            if ((enabled(lvl))) log(lvl, (millis()-start), msg, result);
             return result;
         } catch (SQLException e) {
-            long end = System.currentTimeMillis();
-            log("ERROR", (end-start), msg, extract(e));
+            long end = millis();
+            log(Level.SEVERE, (end-start), msg, extract(e));
             throw e;
         }
     }
 
-    <T> void act(int level, String msg, MeasuredFunctionV fun, T o) throws SQLException {
-        long start = System.currentTimeMillis();
+    <T> void act(Level lvl, String msg, MeasuredFunctionV fun, T o) throws SQLException {
+        long start = millis();
         try {
             fun.call();
-            if (level <= kind) log(l2s[level], (System.currentTimeMillis()-start), msg, o == null ? "" : o);
+            if ((enabled(lvl))) log(lvl, (millis()-start), msg, o == null ? "" : o);
         } catch (SQLException e) {
-            long end = System.currentTimeMillis();
-            log("ERROR", (end-start), msg, extract(e));
+            long end = millis();
+            log(Level.SEVERE, (end-start), msg, extract(e));
             throw e;
         }
     }
@@ -60,10 +70,6 @@ final class Output {
             if (t != null) return m + " " + extract(seen, t);
             return m;
         } else return "";
-    }
-
-    void log(String sev, long ms, String msg, Object result) {
-        System.err.println(""+sev+" "+ms+" "+id+" "+msg+" -> "+extract(result));
     }
 
     private static String extract(Object o) {

@@ -7,6 +7,7 @@ import java.net.URL;
 import java.sql.*;
 import java.util.Calendar;
 import java.util.Map;
+import java.util.logging.Level;
 
 final class TraceResultSet implements ResultSet {
     private final ResultSet wrapped;
@@ -19,7 +20,7 @@ final class TraceResultSet implements ResultSet {
     }
 
     public void close() throws SQLException {
-        statement.output.act(4, "CLOSE RS", wrapped::close, cnt);
+        statement.output.act(Level.FINER, "CLOSE RS", wrapped::close, cnt);
     }
 
     public boolean next() throws SQLException {

@@ -13,7 +13,7 @@ public final class TraceDriver implements Driver {
     /**
      * Setup a JDBC connection url for tracing
      * @param url The URL to use (starting with jdbc: )
-     * @param level The trace level to use (NONE disables tracing, NULL uses runtime-configurable JDBC log level)
+     * @param level The trace level to use (NONE disables tracing, null uses runtime-configurable JDBC log level)
      * @return JDBC URL with/without tracing
      */
     public static String setup(String url, String level) {
@@ -32,13 +32,13 @@ public final class TraceDriver implements Driver {
     }
 
     public Connection connect(String url, Properties info) throws SQLException {
-        int level = extract(url);
-        if (level == 0) return null;
+        Level level = extract(url);
+        if (level == Level.OFF) return null;
         String theUrl = urlOf(url);
-        if (level <= 1) return DriverManager.getConnection(theUrl, info);
+        if (level.intValue() > Level.SEVERE.intValue()) return DriverManager.getConnection(theUrl, info);
 
         Output o = new Output("#" + nextId(), logger, level);
-        return o.act(2, "OPEN "+theUrl, () -> new TraceConnection(DriverManager.getConnection(theUrl, info), o));
+        return o.act(Level.INFO, "OPEN "+theUrl, () -> new TraceConnection(DriverManager.getConnection(theUrl, info), o));
     }
 
     public boolean acceptsURL(String url) {
@@ -65,22 +65,15 @@ public final class TraceDriver implements Driver {
         throw new SQLFeatureNotSupportedException();
     }
 
-    private int extract(String url) {
+    private Level extract(String url) {
         if (acceptsURL(url)) {
             String level = url.substring(prefix.length(), url.indexOf(")jdbc:"));
-            String def = logger.isLoggable(Level.ALL) ? "ALL" : logger.isLoggable(Level.INFO) ? "INFO" : "NONE";
-
-            if ("".equalsIgnoreCase(level) || "default".equalsIgnoreCase(level)) level = def;
-            switch (level.toUpperCase()) {
-                // Open/Statement/Parameter/All
-                case "NONE": return 1;
-                case "INFO": return 2;
-                case "DEBUG": return 3;
-                case "ALL": return 4;
-                default: return 2;
+            if ("".equalsIgnoreCase(level) || "default".equalsIgnoreCase(level)) {
+                return logger.getLevel();
             }
+            return Level.parse(level);
         }
-        return 0;
+        return Level.OFF;
     }
 
     private static String urlOf(String u) {

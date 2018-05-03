@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.*;
 import java.util.Calendar;
+import java.util.logging.Level;
 
 class TracePreparedStatement<T extends PreparedStatement> extends TraceStatement<T> implements PreparedStatement {
     private final String sql;
@@ -16,11 +17,11 @@ class TracePreparedStatement<T extends PreparedStatement> extends TraceStatement
     }
 
     public ResultSet executeQuery() throws SQLException {
-        return output.act(2, sql, () -> wrap(wrapped.executeQuery()));
+        return output.act(Level.INFO, sql, () -> wrap(wrapped.executeQuery()));
     }
 
     public int executeUpdate() throws SQLException {
-        return output.act(2, sql, wrapped::executeUpdate);
+        return output.act(Level.INFO, sql, wrapped::executeUpdate);
     }
 
     public void setNull(int parameterIndex, int sqlType) throws SQLException {
@@ -105,11 +106,11 @@ class TracePreparedStatement<T extends PreparedStatement> extends TraceStatement
     }
 
     public boolean execute() throws SQLException {
-        return output.act(2, sql, wrapped::execute);
+        return output.act(Level.INFO, sql, wrapped::execute);
     }
 
     public void addBatch() throws SQLException {
-        output.act(4, "ADD BATCH", wrapped::addBatch, null);
+        output.act(Level.FINE, "ADD BATCH", wrapped::addBatch, null);
     }
 
     public void setCharacterStream(int parameterIndex, Reader reader, int length) throws SQLException {

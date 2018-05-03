@@ -1,6 +1,7 @@
 package org.helper.jdbctracer;
 
 import java.sql.*;
+import java.util.logging.Level;
 
 class TraceStatement<T extends Statement> implements Statement {
     final T wrapped;
@@ -14,55 +15,55 @@ class TraceStatement<T extends Statement> implements Statement {
     }
 
     ResultSet wrap(ResultSet rs) {
-        return output.kind > 3 ? new TraceResultSet(rs,this) : rs;
+        return output.enabled(Level.FINEST) ? new TraceResultSet(rs,this) : rs;
     }
 
     public ResultSet executeQuery(String sql) throws SQLException {
-        return output.act(2, sql, () -> wrap(wrapped.executeQuery(sql)));
+        return output.act(Level.INFO, sql, () -> wrap(wrapped.executeQuery(sql)));
     }
 
     public int executeUpdate(String sql) throws SQLException {
-        return output.act(2, sql, () -> wrapped.executeUpdate(sql));
+        return output.act(Level.INFO, sql, () -> wrapped.executeUpdate(sql));
     }
 
     public boolean execute(String sql) throws SQLException {
-        return output.act(2, sql, () -> wrapped.execute(sql));
+        return output.act(Level.INFO, sql, () -> wrapped.execute(sql));
     }
 
     public void close() throws SQLException {
-        output.act(3, "CLOSE STMT", wrapped::close, null);
+        output.act(Level.FINE, "CLOSE STMT", wrapped::close, null);
     }
 
     public int getMaxFieldSize() throws SQLException {
-        return output.act(4, "GET MAXFIELDSIZE", wrapped::getMaxFieldSize);
+        return output.act(Level.FINEST, "GET MAXFIELDSIZE", wrapped::getMaxFieldSize);
     }
 
     public void setMaxFieldSize(int max) throws SQLException {
-        output.act(3, "SET MAXFIELDSIZE", () -> wrapped.setMaxFieldSize(max), max);
+        output.act(Level.FINER, "SET MAXFIELDSIZE", () -> wrapped.setMaxFieldSize(max), max);
     }
 
     public int getMaxRows() throws SQLException {
-        return output.act(4, "GET MAXROWS", wrapped::getMaxRows);
+        return output.act(Level.FINER, "GET MAXROWS", wrapped::getMaxRows);
     }
 
     public void setMaxRows(int max) throws SQLException {
-        output.act(3, "SET MAXROWS", () -> wrapped.setMaxRows(max), max);
+        output.act(Level.FINE, "SET MAXROWS", () -> wrapped.setMaxRows(max), max);
     }
 
     public int getQueryTimeout() throws SQLException {
-        return output.act(4, "GET QUERYTIMEOUT", wrapped::getQueryTimeout);
+        return output.act(Level.FINER, "GET QUERYTIMEOUT", wrapped::getQueryTimeout);
     }
 
     public void setQueryTimeout(int seconds) throws SQLException {
-        output.act(3, "SET QUERYTIMEOUT", () -> wrapped.setQueryTimeout(seconds), seconds);
+        output.act(Level.FINE, "SET QUERYTIMEOUT", () -> wrapped.setQueryTimeout(seconds), seconds);
     }
 
     public void setEscapeProcessing(boolean enable) throws SQLException {
-        output.act(4, "SET ESCAPEPROCESSING", () -> wrapped.setEscapeProcessing(enable), enable);
+        output.act(Level.FINER, "SET ESCAPEPROCESSING", () -> wrapped.setEscapeProcessing(enable), enable);
     }
 
     public void cancel() throws SQLException {
-        output.act(3, "CANCEL", wrapped::cancel, null);
+        output.act(Level.INFO, "CANCEL", wrapped::cancel, null);
     }
 
     public SQLWarning getWarnings() throws SQLException {
@@ -74,15 +75,15 @@ class TraceStatement<T extends Statement> implements Statement {
     }
 
     public void setCursorName(String name) throws SQLException {
-        output.act(4, "SET CURSORNAME", () -> wrapped.setCursorName(name), name);
+        output.act(Level.FINE, "SET CURSORNAME", () -> wrapped.setCursorName(name), name);
     }
 
     public ResultSet getResultSet() throws SQLException {
-        return output.act(4, "GET RESULTSET", () -> wrap(wrapped.getResultSet()));
+        return output.act(Level.FINER, "GET RESULTSET", () -> wrap(wrapped.getResultSet()));
     }
 
     public int getUpdateCount() throws SQLException {
-        return output.act(4, "GET UPDATECOUNT", wrapped::getUpdateCount);
+        return output.act(Level.FINER, "GET UPDATECOUNT", wrapped::getUpdateCount);
     }
 
     public boolean getMoreResults() throws SQLException {
@@ -98,11 +99,11 @@ class TraceStatement<T extends Statement> implements Statement {
     }
 
     public void setFetchSize(int rows) throws SQLException {
-        output.act(3, "SET FETCHSIZE", () -> wrapped.setFetchSize(rows), rows);
+        output.act(Level.FINE, "SET FETCHSIZE", () -> wrapped.setFetchSize(rows), rows);
     }
 
     public int getFetchSize() throws SQLException {
-        return output.act(4, "GET FETCHSIZE", wrapped::getFetchSize);
+        return output.act(Level.FINER, "GET FETCHSIZE", wrapped::getFetchSize);
     }
 
     public int getResultSetConcurrency() throws SQLException {
@@ -114,15 +115,15 @@ class TraceStatement<T extends Statement> implements Statement {
     }
 
     public void addBatch(String sql) throws SQLException {
-        output.act(2, "ADDBATCH", () -> wrapped.addBatch(sql), sql);
+        output.act(Level.INFO, "ADDBATCH", () -> wrapped.addBatch(sql), sql);
     }
 
     public void clearBatch() throws SQLException {
-        output.act(3, "CLEARBATCH", wrapped::clearBatch, null);
+        output.act(Level.FINE, "CLEARBATCH", wrapped::clearBatch, null);
     }
 
     public int[] executeBatch() throws SQLException {
-        return output.act(2, "EXECUTEBATCH", wrapped::executeBatch);
+        return output.act(Level.INFO, "EXECUTEBATCH", wrapped::executeBatch);
     }
 
     public Connection getConnection() {
@@ -138,27 +139,27 @@ class TraceStatement<T extends Statement> implements Statement {
     }
 
     public int executeUpdate(String sql, int autoGeneratedKeys) throws SQLException {
-        return output.act(2, sql, () -> executeUpdate(sql, autoGeneratedKeys));
+        return output.act(Level.INFO, sql, () -> executeUpdate(sql, autoGeneratedKeys));
     }
 
     public int executeUpdate(String sql, int[] columnIndexes) throws SQLException {
-        return output.act(2, sql, () -> executeUpdate(sql, columnIndexes));
+        return output.act(Level.INFO, sql, () -> executeUpdate(sql, columnIndexes));
     }
 
     public int executeUpdate(String sql, String[] columnNames) throws SQLException {
-        return output.act(2, sql, () -> executeUpdate(sql, columnNames));
+        return output.act(Level.INFO, sql, () -> executeUpdate(sql, columnNames));
     }
 
     public boolean execute(String sql, int autoGeneratedKeys) throws SQLException {
-        return output.act(2, sql, () -> execute(sql, autoGeneratedKeys));
+        return output.act(Level.INFO, sql, () -> execute(sql, autoGeneratedKeys));
     }
 
     public boolean execute(String sql, int[] columnIndexes) throws SQLException {
-        return output.act(2, sql, () -> execute(sql, columnIndexes));
+        return output.act(Level.INFO, sql, () -> execute(sql, columnIndexes));
     }
 
     public boolean execute(String sql, String[] columnNames) throws SQLException {
-        return output.act(2, sql, () -> execute(sql, columnNames));
+        return output.act(Level.INFO, sql, () -> execute(sql, columnNames));
     }
 
     public int getResultSetHoldability() throws SQLException {
@@ -170,11 +171,11 @@ class TraceStatement<T extends Statement> implements Statement {
     }
 
     public void setPoolable(boolean poolable) throws SQLException {
-        output.act(3, "SET POOLABLE", () -> wrapped.setPoolable(poolable), poolable);
+        output.act(Level.FINE, "SET POOLABLE", () -> wrapped.setPoolable(poolable), poolable);
     }
 
     public boolean isPoolable() throws SQLException {
-        return output.act(3, "ISPOOLABLE", wrapped::isPoolable);
+        return output.act(Level.FINER, "ISPOOLABLE", wrapped::isPoolable);
     }
 
     public void closeOnCompletion() throws SQLException {

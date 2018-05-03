@@ -4,6 +4,7 @@ import java.sql.*;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
+import java.util.logging.Level;
 
 final class TraceConnection implements Connection {
     private final Connection wrapped;
@@ -19,37 +20,37 @@ final class TraceConnection implements Connection {
     }
 
     public PreparedStatement prepareStatement(String sql) throws SQLException {
-        return output.act(2, sql,
+        return output.act(Level.INFO, sql,
                 () -> new TracePreparedStatement(wrapped.prepareStatement(sql), this, sql));
     }
 
     public CallableStatement prepareCall(String sql) throws SQLException {
-        return output.act(2, sql,
+        return output.act(Level.INFO, sql,
                 () -> new TraceCallableStatement(wrapped.prepareCall(sql), this, sql));
     }
 
     public String nativeSQL(String sql) throws SQLException {
-        return output.act(2, sql, () -> wrapped.nativeSQL(sql));
+        return output.act(Level.INFO, sql, () -> wrapped.nativeSQL(sql));
     }
 
     public void setAutoCommit(boolean autoCommit) throws SQLException {
-        output.act(2, "SET AUTOCOMMIT", () -> wrapped.setAutoCommit(autoCommit), autoCommit);
+        output.act(Level.INFO, "SET AUTOCOMMIT", () -> wrapped.setAutoCommit(autoCommit), autoCommit);
     }
 
     public boolean getAutoCommit() throws SQLException {
-        return output.act(3, "GET AUTOCOMMIT", wrapped::getAutoCommit);
+        return output.act(Level.FINE, "GET AUTOCOMMIT", wrapped::getAutoCommit);
     }
 
     public void commit() throws SQLException {
-        output.act(2, "COMMIT", wrapped::commit, null);
+        output.act(Level.INFO, "COMMIT", wrapped::commit, null);
     }
 
     public void rollback() throws SQLException {
-        output.act(2, "ROLLBACK", wrapped::rollback, null);
+        output.act(Level.INFO, "ROLLBACK", wrapped::rollback, null);
     }
 
     public void close() throws SQLException {
-        output.act(2, "CLOSE", wrapped::close, null);
+        output.act(Level.INFO, "CLOSE", wrapped::close, null);
     }
 
     public boolean isClosed() throws SQLException {
@@ -61,27 +62,27 @@ final class TraceConnection implements Connection {
     }
 
     public void setReadOnly(boolean readOnly) throws SQLException {
-        output.act(2, "SET READONLY", () -> wrapped.setReadOnly(readOnly), readOnly);
+        output.act(Level.INFO, "SET READONLY", () -> wrapped.setReadOnly(readOnly), readOnly);
     }
 
     public boolean isReadOnly() throws SQLException {
-        return output.act(3, "IS READONLY", wrapped::isReadOnly);
+        return output.act(Level.FINE, "IS READONLY", wrapped::isReadOnly);
     }
 
     public void setCatalog(String catalog) throws SQLException {
-        output.act(2, "SET CATALOG", () -> wrapped.setCatalog(catalog), catalog);
+        output.act(Level.INFO, "SET CATALOG", () -> wrapped.setCatalog(catalog), catalog);
     }
 
     public String getCatalog() throws SQLException {
-        return output.act(3, "GET CATALOG", wrapped::getCatalog);
+        return output.act(Level.FINE, "GET CATALOG", wrapped::getCatalog);
     }
 
     public void setTransactionIsolation(int level) throws SQLException {
-        output.act(3, "SET ISO_LEVEL", () -> wrapped.setTransactionIsolation(level), level);
+        output.act(Level.INFO, "SET ISO_LEVEL", () -> wrapped.setTransactionIsolation(level), level);
     }
 
     public int getTransactionIsolation() throws SQLException {
-        return output.act(3, "GET ISO_LEVEL", wrapped::getTransactionIsolation);
+        return output.act(Level.FINE, "GET ISO_LEVEL", wrapped::getTransactionIsolation);
     }
 
     public SQLWarning getWarnings() throws SQLException {
@@ -97,11 +98,11 @@ final class TraceConnection implements Connection {
     }
 
     public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
-        return output.act(2, sql, () -> new TracePreparedStatement(wrapped.prepareStatement(sql, resultSetType, resultSetConcurrency), this, sql));
+        return output.act(Level.INFO, sql, () -> new TracePreparedStatement(wrapped.prepareStatement(sql, resultSetType, resultSetConcurrency), this, sql));
     }
 
     public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
-        return output.act(2, sql, () -> new TraceCallableStatement(wrapped.prepareCall(sql, resultSetType, resultSetConcurrency), this, sql));
+        return output.act(Level.INFO, sql, () -> new TraceCallableStatement(wrapped.prepareCall(sql, resultSetType, resultSetConcurrency), this, sql));
     }
 
     public Map<String, Class<?>> getTypeMap() throws SQLException {
@@ -113,7 +114,7 @@ final class TraceConnection implements Connection {
     }
 
     public void setHoldability(int holdability) throws SQLException {
-        output.act(4, "SET HOLDABILITY", () -> wrapped.setHoldability(holdability), holdability);
+        output.act(Level.FINE, "SET HOLDABILITY", () -> wrapped.setHoldability(holdability), holdability);
     }
 
     public int getHoldability() throws SQLException {
@@ -121,19 +122,19 @@ final class TraceConnection implements Connection {
     }
 
     public Savepoint setSavepoint() throws SQLException {
-        return output.act(2, "SAVEPOINT", wrapped::setSavepoint);
+        return output.act(Level.INFO, "SAVEPOINT", wrapped::setSavepoint);
     }
 
     public Savepoint setSavepoint(String name) throws SQLException {
-        return output.act(2, "SAVEPOINT "+name, () -> wrapped.setSavepoint(name));
+        return output.act(Level.INFO, "SAVEPOINT "+name, () -> wrapped.setSavepoint(name));
     }
 
     public void rollback(Savepoint savepoint) throws SQLException {
-        output.act(2, "ROLLBACK SAVEPOINT", () -> wrapped.rollback(savepoint), savepoint);
+        output.act(Level.INFO, "ROLLBACK SAVEPOINT", () -> wrapped.rollback(savepoint), savepoint);
     }
 
     public void releaseSavepoint(Savepoint savepoint) throws SQLException {
-        output.act(2, "RELEASE SAVEPOINT", () -> wrapped.releaseSavepoint(savepoint), savepoint);
+        output.act(Level.INFO, "RELEASE SAVEPOINT", () -> wrapped.releaseSavepoint(savepoint), savepoint);
     }
 
     public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
@@ -141,23 +142,23 @@ final class TraceConnection implements Connection {
     }
 
     public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
-        return output.act(2, sql, () -> new TracePreparedStatement(wrapped.prepareStatement(sql, resultSetType, resultSetConcurrency, resultSetHoldability), this, sql));
+        return output.act(Level.INFO, sql, () -> new TracePreparedStatement(wrapped.prepareStatement(sql, resultSetType, resultSetConcurrency, resultSetHoldability), this, sql));
     }
 
     public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
-        return output.act(2, sql, () -> new TraceCallableStatement(wrapped.prepareCall(sql, resultSetType, resultSetConcurrency, resultSetHoldability), this, sql));
+        return output.act(Level.INFO, sql, () -> new TraceCallableStatement(wrapped.prepareCall(sql, resultSetType, resultSetConcurrency, resultSetHoldability), this, sql));
     }
 
     public PreparedStatement prepareStatement(String sql, int autoGeneratedKeys) throws SQLException {
-        return output.act(2, sql, () -> new TracePreparedStatement(wrapped.prepareStatement(sql, autoGeneratedKeys), this, sql));
+        return output.act(Level.INFO, sql, () -> new TracePreparedStatement(wrapped.prepareStatement(sql, autoGeneratedKeys), this, sql));
     }
 
     public PreparedStatement prepareStatement(String sql, int[] columnIndexes) throws SQLException {
-        return output.act(2, sql, () -> new TracePreparedStatement(wrapped.prepareStatement(sql, columnIndexes), this, sql));
+        return output.act(Level.INFO, sql, () -> new TracePreparedStatement(wrapped.prepareStatement(sql, columnIndexes), this, sql));
     }
 
     public PreparedStatement prepareStatement(String sql, String[] columnNames) throws SQLException {
-        return output.act(2, sql, () -> new TracePreparedStatement(wrapped.prepareStatement(sql, columnNames), this, sql));
+        return output.act(Level.INFO, sql, () -> new TracePreparedStatement(wrapped.prepareStatement(sql, columnNames), this, sql));
     }
 
     public Clob createClob() throws SQLException {
@@ -177,7 +178,7 @@ final class TraceConnection implements Connection {
     }
 
     public boolean isValid(int timeout) throws SQLException {
-        return output.act(3, "IS VALID "+timeout, () -> wrapped.isValid(timeout));
+        return output.act(Level.FINE, "IS VALID "+timeout, () -> wrapped.isValid(timeout));
     }
 
     public void setClientInfo(String name, String value) throws SQLClientInfoException {
@@ -205,23 +206,23 @@ final class TraceConnection implements Connection {
     }
 
     public void setSchema(String schema) throws SQLException {
-        output.act(2, "SET SCHEMA", () -> wrapped.setSchema(schema), schema);
+        output.act(Level.INFO, "SET SCHEMA", () -> wrapped.setSchema(schema), schema);
     }
 
     public String getSchema() throws SQLException {
-        return output.act(3, "GET SCHEMA", wrapped::getSchema);
+        return output.act(Level.FINE, "GET SCHEMA", wrapped::getSchema);
     }
 
     public void abort(Executor executor) throws SQLException {
-        output.act(2, "ABORT EXECUTOR", () -> wrapped.abort(executor), executor);
+        output.act(Level.INFO, "ABORT EXECUTOR", () -> wrapped.abort(executor), executor);
     }
 
     public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException {
-        output.act(3, "SET NETWORKTIMEOUT "+milliseconds, () -> wrapped.setNetworkTimeout(executor, milliseconds), executor);
+        output.act(Level.FINE, "SET NETWORKTIMEOUT "+milliseconds, () -> wrapped.setNetworkTimeout(executor, milliseconds), executor);
     }
 
     public int getNetworkTimeout() throws SQLException {
-        return output.act(4, "GET NETWORKTIMOUT", wrapped::getNetworkTimeout);
+        return output.act(Level.FINER, "GET NETWORKTIMOUT", wrapped::getNetworkTimeout);
     }
 
     public <T> T unwrap(Class<T> iface) throws SQLException {
