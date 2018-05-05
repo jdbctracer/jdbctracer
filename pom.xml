@@ -51,6 +51,18 @@
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
+    <profiles>
+        <profile>
+            <id>sign-upload</id>
+            <activation>
+                <property>
+                    <name>sign-upload</name>
+                    <value>true</value>
+                </property>
+            </activation>
+        </profile>
+    </profiles>
+
     <build>
 
         <resources>
@@ -157,9 +169,9 @@
                 <executions>
                     <execution>
                         <id>sign-artifacts</id>
-                        <phase>verify</phase>
+                        <phase>verifyX</phase>
                         <goals>
-                            <goal>sign</goal>
+                            <goal>signX</goal>
                         </goals>
                     </execution>
                 </executions>
