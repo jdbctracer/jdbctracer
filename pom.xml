@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>jdbctracer</groupId>
+    <groupId>com.github.jdbctracer</groupId>
     <artifactId>jdbctracer</artifactId>
     <version>1.0</version>
     <url>https://github.com/jdbctracer</url>
@@ -30,7 +30,7 @@
     <developers>
         <developer>
             <id>jdbctracer</id>
-            <name>Thomas Krueger</name>
+            <name>Tom Krueger</name>
             <url>https://github.com/jdbctracer</url>
             <timezone>Central European Time</timezone>
         </developer>
@@ -152,6 +152,11 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.0.0</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                    <quiet>true</quiet>
+                    <nonavbar>true</nonavbar>
+                </configuration>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -166,12 +171,15 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
                 <version>1.6</version>
+                <configuration>
+                    <keyname>99F32247</keyname>
+                </configuration>
                 <executions>
                     <execution>
                         <id>sign-artifacts</id>
-                        <phase>verifyX</phase>
+                        <phase>verify</phase>
                         <goals>
-                            <goal>signX</goal>
+                            <goal>sign</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -189,4 +197,20 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <distributionManagement>
+        <!-- Repository for snapshots
+        <repository>
+            <id>sonatype-nexus-snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </repository>
+        -->
+        <!-- Repository for releases -->
+        <repository>
+            <id>nexus-releases</id>
+            <name>Nexus Release Repository</name>
+            <url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
 </project>
