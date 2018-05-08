@@ -35,7 +35,7 @@ final class Output {
     }
 
     private void log(Level lvl, long ms, String msg, Object result) {
-        logger.log(lvl, "%dms %s %s -> %s", new Object[]{ms, id, msg, extract(result)});
+        logger.log(lvl, String.format("%dms %s %s -> %s", ms, id, msg, extract(result)));
     }
 
     <R> R act(Level lvl, String msg, MeasuredFunction<R> fun) throws SQLException {

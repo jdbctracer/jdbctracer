@@ -5,6 +5,11 @@ import org.junit.Test;
 public class DriverTests {
 
     @Test
+    public void getPrefix_has_fixed_value() {
+       Assert.assertEquals("Must not change", "jdbctrace(", TraceDriver.getPrefix());
+    }
+
+    @Test
     public void setup_is_called_with_NONE_returns_unchanged() {
         String url = "jdbc:does_not:matter";
 

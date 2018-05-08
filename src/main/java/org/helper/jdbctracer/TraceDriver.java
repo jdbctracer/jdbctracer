@@ -23,12 +23,14 @@ public final class TraceDriver implements Driver {
         return url;
     }
 
+    public static String getPrefix() { return prefix; }
+
     public TraceDriver() {
     }
 
     static {
         logger = Logger.getLogger("JDBC");
-        try { DriverManager.registerDriver(new TraceDriver()); } catch (SQLException e) { }
+        try { DriverManager.registerDriver(new TraceDriver()); } catch (SQLException e) { logger.log(Level.SEVERE, "TraceDriver not installable");}
     }
 
     public Connection connect(String url, Properties info) throws SQLException {
